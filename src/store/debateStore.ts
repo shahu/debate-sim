@@ -3,7 +3,7 @@ import { SpeakerRole } from '../types/debate';
 import { DebateTimer } from '../hooks/useDebateTimer';
 
 // Define the structure for debate transcript entries
-interface TranscriptEntry {
+export interface TranscriptEntry {
   id: string;
   speaker: SpeakerRole;
   content: string;
@@ -14,23 +14,30 @@ interface TranscriptEntry {
 }
 
 // Define the debate state interface
-interface DebateState {
+export interface DebateState {
   // Debate metadata
   motion: string | null;
   status: 'idle' | 'preparing' | 'active' | 'paused' | 'completed';
-  
+
   // Current speaker and turn information
   currentSpeaker: SpeakerRole | null;
   currentSpeakerIndex: number; // Index in the speaking order
   speakingSequence: SpeakerRole[]; // Order of speakers [PM, LO, MO, PW]
-  
+
   // Time management
   timer: DebateTimer | null;
   timeRemaining: number; // Seconds remaining for current speaker
-  
+
   // Debate transcript
   transcript: TranscriptEntry[];
-  
+
+  // Active streaming entry
+  streamingEntry: {
+    id: string;
+    speaker: SpeakerRole;
+    streamGenerator: AsyncIterable<string> | null;
+  } | null;
+
   // Debate statistics
   statistics: {
     totalWords: number;
@@ -48,6 +55,9 @@ interface DebateState {
   pauseDebate: () => void;
   resumeDebate: () => void;
   endDebate: () => void;
+  startStreamingEntry: (speaker: SpeakerRole, streamGenerator: AsyncIterable<string>) => void;
+  finalizeStreamingEntry: (finalText: string, wordCount: number) => void;
+  cancelStreamingEntry: () => void;
 }
 
 // Create the debate store
@@ -57,10 +67,11 @@ export const useDebateStore = create<DebateState>((set, get) => ({
   status: 'idle',
   currentSpeaker: null,
   currentSpeakerIndex: -1,
-  speakingSequence: ['PM', 'LO', 'MO', 'PW'],
+  speakingSequence: [SpeakerRole.PM, SpeakerRole.LO, SpeakerRole.MO, SpeakerRole.PW],
   timer: null,
   timeRemaining: 0,
   transcript: [],
+  streamingEntry: null,
   statistics: {
     totalWords: 0,
     avgWordsPerSpeaker: 0,
@@ -74,7 +85,7 @@ export const useDebateStore = create<DebateState>((set, get) => ({
     status: 'active',
     currentSpeaker: state.speakingSequence[0],
     currentSpeakerIndex: 0,
-    timeRemaining: state.currentSpeaker === 'PM' ? 420 : 0, // 7 min for PM initially
+    timeRemaining: state.currentSpeaker === SpeakerRole.PM ? 420 : 0, // 7 min for PM initially
     transcript: [{
       id: `entry-${Date.now()}`,
       speaker: state.speakingSequence[0],
@@ -91,10 +102,10 @@ export const useDebateStore = create<DebateState>((set, get) => ({
     // Calculate time allocation based on role
     let timeAllocation = 0;
     switch(nextSpeaker) {
-      case 'PM': timeAllocation = 420; break; // 7 min
-      case 'LO': timeAllocation = 480; break; // 8 min
-      case 'MO': timeAllocation = 240; break; // 4 min
-      case 'PW': timeAllocation = 240; break; // 4 min
+      case SpeakerRole.PM: timeAllocation = 420; break; // 7 min
+      case SpeakerRole.LO: timeAllocation = 480; break; // 8 min
+      case SpeakerRole.MO: timeAllocation = 240; break; // 4 min
+      case SpeakerRole.PW: timeAllocation = 240; break; // 4 min
       default: timeAllocation = 0;
     }
     
@@ -156,11 +167,57 @@ export const useDebateStore = create<DebateState>((set, get) => ({
     timer: null,
     timeRemaining: 0,
     transcript: [],
+    streamingEntry: null,
     statistics: {
       totalWords: 0,
       avgWordsPerSpeaker: 0,
       totalSpeakingTime: 0
     }
+  })),
+
+  startStreamingEntry: (speaker: SpeakerRole, streamGenerator: AsyncIterable<string>) => set((state) => ({
+    streamingEntry: {
+      id: `stream-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      speaker,
+      streamGenerator
+    }
+  })),
+
+  finalizeStreamingEntry: (finalText: string, wordCount: number) => set((state) => {
+    if (!state.streamingEntry) return state;
+
+    const newEntry: TranscriptEntry = {
+      id: state.streamingEntry.id,
+      speaker: state.streamingEntry.speaker,
+      content: finalText,
+      timestamp: new Date(),
+      type: 'speech',
+      wordCount
+    };
+
+    // Update statistics
+    const totalWords = state.statistics.totalWords + wordCount;
+    const avgWordsPerSpeaker = totalWords / state.speakingSequence.length;
+
+    return {
+      ...state,
+      transcript: [...state.transcript, newEntry],
+      streamingEntry: null,
+      statistics: {
+        ...state.statistics,
+        totalWords,
+        avgWordsPerSpeaker
+      }
+    };
+  }),
+
+  cancelStreamingEntry: () => set(() => ({
+    streamingEntry: null
+  })),
+
+  pauseDebate: () => set((state) => ({
+    ...state,
+    status: 'paused'
   })),
 
   pauseDebate: () => set((state) => ({
