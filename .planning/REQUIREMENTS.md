@@ -79,22 +79,22 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MECH-04 | Phase 1 | Pending |
 | MECH-05 | Phase 1 | Pending |
 | MECH-06 | Phase 1 | Pending |
-| AIAG-01 | Phase 2 | Pending |
-| AIAG-02 | Phase 2 | Pending |
-| AIAG-03 | Phase 2 | Pending |
-| AIAG-04 | Phase 2 | Pending |
-| AIAG-05 | Phase 2 | Pending |
-| UI-01 | Phase 3 | Pending |
-| UI-02 | Phase 3 | Pending |
-| UI-03 | Phase 3 | Pending |
-| UI-04 | Phase 3 | Pending |
-| UI-05 | Phase 3 | Pending |
-| UI-06 | Phase 3 | Pending |
-| STRM-01 | Phase 4 | Pending |
+| AIAG-01 | Phase 1 | Pending |
+| AIAG-02 | Phase 1 | Pending |
+| AIAG-03 | Phase 1 | Pending |
+| AIAG-04 | Phase 1 | Pending |
+| AIAG-05 | Phase 1 | Pending |
+| UI-01 | Phase 2 | Pending |
+| UI-02 | Phase 2 | Pending |
+| UI-03 | Phase 2 | Pending |
+| UI-04 | Phase 2 | Pending |
+| UI-05 | Phase 2 | Pending |
+| UI-06 | Phase 2 | Pending |
+| STRM-01 | Phase 3 | Pending |
+| STRM-04 | Phase 3 | Pending |
+| STRM-05 | Phase 3 | Pending |
 | STRM-02 | Phase 4 | Pending |
 | STRM-03 | Phase 4 | Pending |
-| STRM-04 | Phase 4 | Pending |
-| STRM-05 | Phase 4 | Pending |
 | STRM-06 | Phase 4 | Pending |
 | SCOR-01 | Phase 5 | Pending |
 | SCOR-02 | Phase 5 | Pending |
@@ -104,8 +104,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 **Coverage:**
 - v1 requirements: 25 total
-- Mapped to phases: 0
-- Unmapped: 25 ⚠️
+- Mapped to phases: 25
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-01-29*
