@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { SpeakerRole } from '../types/debate';
 import { DebateTimer } from '../hooks/useDebateTimer';
+import { debateEngine } from '../lib/debateEngine';
 
 // Define the structure for debate transcript entries
 export interface TranscriptEntry {
@@ -79,26 +80,31 @@ export const useDebateStore = create<DebateState>((set) => ({
   },
 
   // Actions
-  startDebate: (motion: string) => set((state) => ({
-    ...state,
-    motion,
-    status: 'active',
-    currentSpeaker: state.speakingSequence[0],
-    currentSpeakerIndex: 0,
-    timeRemaining: state.currentSpeaker === SpeakerRole.PM ? 420 : 0, // 7 min for PM initially
-    transcript: [{
-      id: `entry-${Date.now()}`,
-      speaker: state.speakingSequence[0],
-      content: `Starting debate on motion: ${motion}`,
-      timestamp: new Date(),
-      type: 'transition'
-    }]
-  })),
+  startDebate: (motion: string) => {
+    set((state) => ({
+      ...state,
+      motion,
+      status: 'active',
+      currentSpeaker: state.speakingSequence[0],
+      currentSpeakerIndex: 0,
+      timeRemaining: state.currentSpeaker === SpeakerRole.PM ? 420 : 0, // 7 min for PM initially
+      transcript: [{
+        id: `entry-${Date.now()}`,
+        speaker: state.speakingSequence[0],
+        content: `Starting debate on motion: ${motion}`,
+        timestamp: new Date(),
+        type: 'transition'
+      }]
+    }));
+
+    // Trigger engine to start debate flow (includes streaming)
+    debateEngine.startDebate(motion);
+  },
 
   nextSpeaker: () => set((state) => {
     const nextIndex = (state.currentSpeakerIndex + 1) % state.speakingSequence.length;
     const nextSpeaker = state.speakingSequence[nextIndex];
-    
+
     // Calculate time allocation based on role
     let timeAllocation = 0;
     switch(nextSpeaker) {
@@ -108,7 +114,7 @@ export const useDebateStore = create<DebateState>((set) => ({
       case SpeakerRole.PW: timeAllocation = 240; break; // 4 min
       default: timeAllocation = 0;
     }
-    
+
     return {
       ...state,
       currentSpeaker: nextSpeaker,
