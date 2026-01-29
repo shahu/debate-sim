@@ -55,17 +55,17 @@ The CPDL Debate Simulator roadmap delivers a rich interactive web application th
 
 **Dependencies:** Phase 1 (needs core mechanics), Phase 2 (needs UI to display stream)
 
-**Plans:** 3 plans
+**Plans:** 3 plans (1/3 complete)
 
 **Requirements:** STRM-01, STRM-04, STRM-05
 
 **Success Criteria:**
-1. Text output streams in real-time as AI generates content during the debate
+1. Text output streams in real-time as AI generates content during debate
 2. Streaming text and any audio are synchronized for natural feel
 3. TTS latency is minimized to maintain natural debate rhythm
 
 **Plans:**
-- [ ] 03-01-PLAN.md — AI streaming foundation with buffered display hook
+- [x] 03-01-PLAN.md — AI streaming foundation with buffered display hook
 - [ ] 03-02-PLAN.md — UI components for real-time streaming transcript
 - [ ] 03-03-PLAN.md — End-to-end integration and verification
 
