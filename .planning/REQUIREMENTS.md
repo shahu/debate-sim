@@ -73,17 +73,17 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| MECH-01 | Phase 1 | Pending |
-| MECH-02 | Phase 1 | Pending |
-| MECH-03 | Phase 1 | Pending |
-| MECH-04 | Phase 1 | Pending |
-| MECH-05 | Phase 1 | Pending |
-| MECH-06 | Phase 1 | Pending |
-| AIAG-01 | Phase 1 | Pending |
-| AIAG-02 | Phase 1 | Pending |
-| AIAG-03 | Phase 1 | Pending |
-| AIAG-04 | Phase 1 | Pending |
-| AIAG-05 | Phase 1 | Pending |
+| MECH-01 | Phase 1 | Complete |
+| MECH-02 | Phase 1 | Complete |
+| MECH-03 | Phase 1 | Complete |
+| MECH-04 | Phase 1 | Complete |
+| MECH-05 | Phase 1 | Complete |
+| MECH-06 | Phase 1 | Complete |
+| AIAG-01 | Phase 1 | Complete |
+| AIAG-02 | Phase 1 | Complete |
+| AIAG-03 | Phase 1 | Complete |
+| AIAG-04 | Phase 1 | Complete |
+| AIAG-05 | Phase 1 | Complete |
 | UI-01 | Phase 2 | Pending |
 | UI-02 | Phase 2 | Pending |
 | UI-03 | Phase 2 | Pending |
