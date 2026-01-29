@@ -33,11 +33,6 @@ export interface DebateTimer {
   isRunning: boolean;
   startTime?: Date;
   currentTime?: Date;
-  onPause?: () => void;
-  onResume?: () => void;
-  onReset?: () => void;
-  onStart?: () => void;
-  onComplete?: () => void;
 }
 
 // Main interface for debate state

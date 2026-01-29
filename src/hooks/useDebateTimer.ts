@@ -5,9 +5,11 @@ import { DEFAULT_TIMERS } from '../lib/constants';
 interface UseDebateTimerProps {
   initialTime?: number;
   role?: SpeakerRole;
+  onTick?: (remaining: number) => void;
+  onTimeout?: () => void;
 }
 
-export const useDebateTimer = ({ initialTime, role }: UseDebateTimerProps = {}) => {
+export const useDebateTimer = ({ initialTime, role, onTick, onTimeout }: UseDebateTimerProps = {}) => {
   const [timer, setTimer] = useState<DebateTimer>({
     timeRemaining: initialTime || (role ? DEFAULT_TIMERS[role] : 0),
     isRunning: false,
@@ -37,6 +39,10 @@ export const useDebateTimer = ({ initialTime, role }: UseDebateTimerProps = {}) 
             if (intervalRef.current) {
               clearInterval(intervalRef.current);
             }
+            // Call timeout callback if provided
+            if (onTimeout) {
+              setTimeout(onTimeout, 0); // Execute in next tick to avoid blocking state update
+            }
             return {
               ...prev,
               timeRemaining: 0,
@@ -44,9 +50,16 @@ export const useDebateTimer = ({ initialTime, role }: UseDebateTimerProps = {}) 
             };
           }
           
+          const newTimeRemaining = prev.timeRemaining - 1;
+          
+          // Call tick callback if provided
+          if (onTick) {
+            onTick(newTimeRemaining);
+          }
+          
           return {
             ...prev,
-            timeRemaining: prev.timeRemaining - 1,
+            timeRemaining: newTimeRemaining,
             currentTime: new Date(),
           };
         });
@@ -92,6 +105,11 @@ export const useDebateTimer = ({ initialTime, role }: UseDebateTimerProps = {}) 
       ...prev,
       timeRemaining: newTime,
     }));
+    
+    // Call tick callback if provided
+    if (onTick) {
+      onTick(newTime);
+    }
   };
 
   // Format time as MM:SS

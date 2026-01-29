@@ -6,8 +6,8 @@ import { ROLE_DESCRIPTIONS, DEFAULT_TIMERS, DEBATE_MOTION_REGEX } from './consta
  * Enforces the specific rules and regulations of the CPDL debate format
  */
 
-// Validate debate motion format
-export const validateMotion = (motion: string): boolean => {
+// Validate debate motion format - checks for "This House believes that..." format
+export const validateMotionFormat = (motion: string): boolean => {
   return DEBATE_MOTION_REGEX.test(motion.trim());
 };
 
@@ -20,6 +20,9 @@ export const extractMotionCore = (motion: string): string => {
   }
   return motion.trim();
 };
+
+// Alias for backward compatibility
+export const validateMotion = validateMotionFormat;
 
 // Check if it's the speaker's turn
 export const isCurrentSpeaker = (state: DebateState, role: SpeakerRole): boolean => {
@@ -170,7 +173,7 @@ export const validateCPDLFormat = (state: DebateState): boolean => {
   const hasAllRoles = requiredRoles.every(role => speakerRoles.includes(role));
   
   // Validate motion format
-  const validMotion = validateMotion(state.motion);
+  const validMotion = validateMotionFormat(state.motion);
   
   return hasAllRoles && validMotion;
 };
@@ -181,7 +184,69 @@ export const getTimeAllocation = (role: SpeakerRole): number => {
 };
 
 // Check if we're in protected time (first or last minute of a speech)
-export const isInProtectedTime = (elapsedTime: number, totalTime: number): boolean => {
+export const isProtectedTime = (elapsedTime: number, totalTime: number): boolean => {
   // Protected time is the first and last minute
   return elapsedTime <= 60 || (totalTime - elapsedTime) <= 60;
+};
+
+// Check if current time allows POIs (outside protected periods)
+export const checkPOIPeriod = (elapsedTime: number, totalTime: number): boolean => {
+  // POIs are allowed outside protected periods (first and last minute)
+  return !isProtectedTime(elapsedTime, totalTime);
+};
+
+// Enforce role-specific rules for debate content
+export const enforceRoleRules = (
+  role: SpeakerRole,
+  content: string,
+  context?: {
+    pmDefinition?: string;
+    previousArguments?: string[];
+  }
+): { isValid: boolean; violations: string[]; suggestions: string[] } => {
+  const violations: string[] = [];
+  const suggestions: string[] = [];
+
+  switch (role) {
+    case 'LO':
+      // LO must challenge PM definition
+      if (context?.pmDefinition) {
+        // Simple check: does the content reference challenging PM's position?
+        const lowerContent = content.toLowerCase();
+        if (!lowerContent.includes('definition') && 
+            !lowerContent.includes('challenge') && 
+            !lowerContent.includes('reject') &&
+            !lowerContent.includes('counter')) {
+          violations.push('LO should challenge PM\'s definition or framework');
+          suggestions.push('Consider addressing PM\'s definition directly and offering counter-perspective');
+        }
+      }
+      break;
+
+    case 'MO':
+    case 'PW':
+      // MO/PW should not introduce new arguments
+      if (context?.previousArguments) {
+        // This would be more sophisticated in a real implementation
+        // For now, we'll just add a note that this is important
+        suggestions.push(`${role} should focus on extending existing arguments or rebutting, not introducing new arguments`);
+      } else {
+        suggestions.push(`${role} should not introduce new arguments, only extend or rebut existing ones`);
+      }
+      break;
+
+    case 'PM':
+      // PM should outline a proper case
+      if (content.length < 50) {
+        violations.push('PM content appears too brief for proper case outline');
+        suggestions.push('Outline your main arguments and provide substantial case for the motion');
+      }
+      break;
+  }
+
+  return {
+    isValid: violations.length === 0,
+    violations,
+    suggestions
+  };
 };
