@@ -5,7 +5,7 @@
  */
 
 import { openai } from '@ai-sdk/openai';
-import { generateText } from 'ai';
+import { generateText, streamText } from 'ai';
 import { z } from 'zod';
 import { SpeakerRole } from '../types/debate';
 import { enforceRoleRules } from './debateRules';
@@ -26,8 +26,8 @@ Focus on logical argumentation, evidence-based reasoning, and effective rhetoric
 
 // Role-specific system prompts with their behavioral patterns
 const ROLE_CONFIGURATIONS: Record<SpeakerRole, SpeakerAgentConfig> = {
-  PM: {
-    role: 'PM',
+  [SpeakerRole.PM]: {
+    role: SpeakerRole.PM,
     systemPrompt: BASE_DEBATE_SYSTEM_PROMPT + `
 You are the Prime Minister (PM), opening the debate for the Government side.
 Your responsibilities:
@@ -52,8 +52,8 @@ CRITICAL RULES:
     argumentationStyle: 'Constructive and definitional - build up the government case from first principles'
   },
   
-  LO: {
-    role: 'LO',
+  [SpeakerRole.LO]: {
+    role: SpeakerRole.LO,
     systemPrompt: BASE_DEBATE_SYSTEM_PROMPT + `
 You are the Leader of Opposition (LO), opposing the motion and the PM's definition.
 Your responsibilities:
@@ -79,8 +79,8 @@ CRITICAL RULES:
     argumentationStyle: 'Challenging and rebuttal-focused - tear down government arguments while building opposition case'
   },
   
-  MO: {
-    role: 'MO',
+  [SpeakerRole.MO]: {
+    role: SpeakerRole.MO,
     systemPrompt: BASE_DEBATE_SYSTEM_PROMPT + `
 You are the Member of Opposition (MO), extending the opposition case.
 Your responsibilities:
@@ -104,8 +104,8 @@ CRITICAL RULES:
     argumentationStyle: 'Extension and synthesis - deepen existing opposition arguments without introducing new ones'
   },
   
-  PW: {
-    role: 'PW',
+  [SpeakerRole.PW]: {
+    role: SpeakerRole.PW,
     systemPrompt: BASE_DEBATE_SYSTEM_PROMPT + `
 You are the Prime Minister's Whip (PW), defending the government case and closing the debate.
 Your responsibilities:
@@ -225,9 +225,9 @@ export const generateSpeakerContent = async (
   povRequest?: { requester: SpeakerRole; content: string }
 ): Promise<DebateContent> => {
   try {
-    // Format the conversation history for context
+    // Format conversation history for context
     let contextHistory = `DEBATE MOTION: ${motion}\n\n`;
-    
+
     if (previousStatements.length > 0) {
       contextHistory += "PREVIOUS STATEMENTS:\n";
       previousStatements.forEach((statement, index) => {
@@ -251,14 +251,9 @@ export const generateSpeakerContent = async (
       model: openai('gpt-4-turbo'),
       prompt: fullPrompt,
       temperature: 0.7, // Balanced for creativity and coherence
-      maxTokens: 1000, // Adjust based on turn length
-      schema: z.object({
-        content: z.string().describe('The generated debate content'),
-        wordCount: z.number().describe('Approximate word count of the content')
-      }),
     });
 
-    // Extract content and word count from result
+    // Use the generated content directly
     const generatedContent = result.text;
     const wordCount = generatedContent.split(/\s+/).length;
 
@@ -272,3 +267,68 @@ export const generateSpeakerContent = async (
     throw new Error(`Failed to generate content for ${role} role: ${(error as Error).message}`);
   }
 };
+
+/**
+ * Streams content for specified role using AI
+ * @param role The speaker role
+ * @param motion The debate motion
+ * @param previousStatements Previous statements in debate
+ * @param povRequest Optional POI request to respond to
+ * @returns Async generator yielding text chunks as they arrive from the AI
+ *
+ * @remarks
+ * This function provides real-time streaming of AI-generated content for a more natural debate experience.
+ * Use this when you want to display content as it's generated, instead of waiting for full completion.
+ * Both streaming (streamSpeakerContent) and non-streaming (generateSpeakerContent) versions coexist.
+ *
+ * @example
+ * ```typescript
+ * for await (const chunk of streamSpeakerContent(role, motion, previousStatements)) {
+ *   displayText += chunk; // Update UI incrementally
+ * }
+ * ```
+ */
+export async function* streamSpeakerContent(
+  role: SpeakerRole,
+  motion: string,
+  previousStatements: Array<{ role: SpeakerRole; content: string }> = [],
+  povRequest?: { requester: SpeakerRole; content: string }
+): AsyncIterable<string> {
+  try {
+    // Format conversation history for context (same as generateSpeakerContent)
+    let contextHistory = `DEBATE MOTION: ${motion}\n\n`;
+
+    if (previousStatements.length > 0) {
+      contextHistory += "PREVIOUS STATEMENTS:\n";
+      previousStatements.forEach((statement, index) => {
+        contextHistory += `${index + 1}. ${statement.role}: ${statement.content}\n`;
+      });
+      contextHistory += "\n";
+    }
+
+    if (povRequest) {
+      contextHistory += `POINT OF INFORMATION REQUEST from ${povRequest.requester}: ${povRequest.content}\n`;
+      contextHistory += "Respond briefly to accept or reject the POI, then continue with your main points.\n\n";
+    }
+
+    // Get the role-specific system prompt
+    const rolePrompt = getSpeakerSystemPrompt(role);
+
+    const fullPrompt = contextHistory + `\n\n${rolePrompt}`;
+
+    // Stream text using Vercel AI SDK
+    const result = await streamText({
+      model: openai('gpt-4-turbo'),
+      prompt: fullPrompt,
+      temperature: 0.7, // Balanced for creativity and coherence
+    });
+
+    // Yield chunks as they arrive from the stream
+    for await (const chunk of result.textStream) {
+      yield chunk;
+    }
+  } catch (error) {
+    console.error(`Error streaming content for ${role}:`, error);
+    throw new Error(`Failed to stream content for ${role} role: ${(error as Error).message}`);
+  }
+}
