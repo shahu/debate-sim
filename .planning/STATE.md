@@ -10,7 +10,7 @@
 
 **Current Phase:** 1
 **Current Plan:** Core Mechanics
-**Status:** Initialized
+**Status:** Planned
 **Progress:** 0%
 
 ```

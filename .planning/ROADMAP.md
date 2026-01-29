@@ -15,6 +15,8 @@ The CPDL Debate Simulator roadmap delivers a rich interactive web application th
 
 **Dependencies:** None (foundation phase)
 
+**Plans:** 3 plans
+
 **Requirements:** MECH-01, MECH-02, MECH-03, MECH-04, MECH-05, MECH-06, AIAG-01, AIAG-02, AIAG-03, AIAG-04, AIAG-05
 
 **Success Criteria:**
@@ -22,6 +24,11 @@ The CPDL Debate Simulator roadmap delivers a rich interactive web application th
 2. System enforces correct timing for each role (PM: 7min, LO: 8min, MO: 4min, PW: 4min)
 3. AI agents generate appropriate responses following role-specific behavioral patterns
 4. System implements POI mechanism during non-protected time periods
+
+**Plans:**
+- [ ] 01-01-PLAN.md — Core types, constants, and timer functionality
+- [ ] 01-02-PLAN.md — Rule enforcement and timer hook implementation  
+- [ ] 01-03-PLAN.md — AI agents, debate engine, and POI mechanism
 
 ### Phase 2 - UI Experience
 **Goal:** Users can see the debate unfold with clear visual representation
@@ -77,7 +84,7 @@ The CPDL Debate Simulator roadmap delivers a rich interactive web application th
 
 | Phase | Status | Started | Completed | Notes |
 |-------|--------|---------|-----------|-------|
-| Phase 1 | Pending | - | - | Foundation for entire application |
+| Phase 1 | Planned | - | - | Foundation for entire application |
 | Phase 2 | Pending | - | - | Depends on Phase 1 completion |
 | Phase 3 | Pending | - | - | Depends on Phases 1 & 2 completion |
 | Phase 4 | Pending | - | - | Depends on Phases 1, 2 & 3 completion |
