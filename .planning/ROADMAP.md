@@ -35,7 +35,7 @@ The CPDL Debate Simulator roadmap delivers a rich interactive web application th
 
 **Dependencies:** Phase 1 (needs core mechanics to display)
 
-**Plans:** 3 plans
+**Plans:** 3 plans (3/3 complete)
 
 **Requirements:** UI-01, UI-02, UI-03, UI-04, UI-05, UI-06
 
@@ -46,14 +46,16 @@ The CPDL Debate Simulator roadmap delivers a rich interactive web application th
 4. User can see visual indicators showing debate flow and current phase
 
 **Plans:**
-- [ ] 02-01-PLAN.md — Dashboard foundation with speaker indicator, timer, and role colors
-- [ ] 02-02-PLAN.md — Controls (pause/restart), flow indicator, and smooth transitions
-- [ ] 02-03-PLAN.md — Interactive elements (transcript, motion input, POI controls)
+- [x] 02-01-PLAN.md — Dashboard foundation with speaker indicator, timer, and role colors
+- [x] 02-02-PLAN.md — Controls (pause/restart), flow indicator, and smooth transitions
+- [x] 02-03-PLAN.md — Interactive elements (transcript, motion input, POI controls)
 
 ### Phase 3 - Streaming
 **Goal:** Users see real-time text streaming as debate unfolds
 
 **Dependencies:** Phase 1 (needs core mechanics), Phase 2 (needs UI to display stream)
+
+**Plans:** 3 plans
 
 **Requirements:** STRM-01, STRM-04, STRM-05
 
@@ -61,6 +63,11 @@ The CPDL Debate Simulator roadmap delivers a rich interactive web application th
 1. Text output streams in real-time as AI generates content during the debate
 2. Streaming text and any audio are synchronized for natural feel
 3. TTS latency is minimized to maintain natural debate rhythm
+
+**Plans:**
+- [ ] 03-01-PLAN.md — AI streaming foundation with buffered display hook
+- [ ] 03-02-PLAN.md — UI components for real-time streaming transcript
+- [ ] 03-03-PLAN.md — End-to-end integration and verification
 
 ### Phase 4 - Audio Enhancement
 **Goal:** Users can hear the debate with distinct voices for each role
@@ -92,7 +99,7 @@ The CPDL Debate Simulator roadmap delivers a rich interactive web application th
 | Phase | Status | Started | Completed | Notes |
 |-------|--------|---------|-----------|-------|
 | Phase 1 | Complete | 2026-01-29 | 2026-01-29 | Foundation for entire application |
-| Phase 2 | Planned | 2026-01-29 | - | 3 plans in 2 waves |
+| Phase 2 | Complete | 2026-01-29 | 2026-01-29 | Full UI experience with controls |
 | Phase 3 | Pending | - | - | Depends on Phases 1 & 2 completion |
 | Phase 4 | Pending | - | - | Depends on Phases 1, 2 & 3 completion |
 | Phase 5 | Pending | - | - | Depends on Phases 1 & 2 completion |
