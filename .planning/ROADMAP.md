@@ -35,6 +35,8 @@ The CPDL Debate Simulator roadmap delivers a rich interactive web application th
 
 **Dependencies:** Phase 1 (needs core mechanics to display)
 
+**Plans:** 3 plans
+
 **Requirements:** UI-01, UI-02, UI-03, UI-04, UI-05, UI-06
 
 **Success Criteria:**
@@ -42,6 +44,11 @@ The CPDL Debate Simulator roadmap delivers a rich interactive web application th
 2. Each debater's text is displayed with distinct styling/colors for easy identification
 3. Real-time display updates as debate progresses with smooth transitions
 4. User can see visual indicators showing debate flow and current phase
+
+**Plans:**
+- [ ] 02-01-PLAN.md — Dashboard foundation with speaker indicator, timer, and role colors
+- [ ] 02-02-PLAN.md — Controls (pause/restart), flow indicator, and smooth transitions
+- [ ] 02-03-PLAN.md — Interactive elements (transcript, motion input, POI controls)
 
 ### Phase 3 - Streaming
 **Goal:** Users see real-time text streaming as debate unfolds
@@ -85,7 +92,7 @@ The CPDL Debate Simulator roadmap delivers a rich interactive web application th
 | Phase | Status | Started | Completed | Notes |
 |-------|--------|---------|-----------|-------|
 | Phase 1 | Complete | 2026-01-29 | 2026-01-29 | Foundation for entire application |
-| Phase 2 | Pending | - | - | Depends on Phase 1 completion |
+| Phase 2 | Planned | 2026-01-29 | - | 3 plans in 2 waves |
 | Phase 3 | Pending | - | - | Depends on Phases 1 & 2 completion |
 | Phase 4 | Pending | - | - | Depends on Phases 1, 2 & 3 completion |
 | Phase 5 | Pending | - | - | Depends on Phases 1 & 2 completion |
