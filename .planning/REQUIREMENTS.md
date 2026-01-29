@@ -33,7 +33,7 @@
 
 ### Streaming & Audio
 
-- [ ] **STRM-01**: Text output streams in real-time as AI generates content
+- [x] **STRM-01**: Text output streams in real-time as AI generates content
 - [ ] **STRM-02**: TTS voice synthesis provides audio output for each role
 - [ ] **STRM-03**: Each role has a distinct voice characteristic (pitch, tone, etc.)
 - [ ] **STRM-04**: Streaming text and audio are synchronized for natural feel
@@ -84,12 +84,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AIAG-03 | Phase 1 | Complete |
 | AIAG-04 | Phase 1 | Complete |
 | AIAG-05 | Phase 1 | Complete |
-| UI-01 | Phase 2 | Pending |
-| UI-02 | Phase 2 | Pending |
-| UI-03 | Phase 2 | Pending |
-| UI-04 | Phase 2 | Pending |
-| UI-05 | Phase 2 | Pending |
-| UI-06 | Phase 2 | Pending |
+| UI-01 | Phase 2 | Complete |
+| UI-02 | Phase 2 | Complete |
+| UI-03 | Phase 2 | Complete |
+| UI-04 | Phase 2 | Complete |
+| UI-05 | Phase 2 | Complete |
+| UI-06 | Phase 2 | Complete |
 | STRM-01 | Phase 3 | Pending |
 | STRM-04 | Phase 3 | Pending |
 | STRM-05 | Phase 3 | Pending |
