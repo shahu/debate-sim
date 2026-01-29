@@ -1,15 +1,7 @@
 import { SpeakerRole } from '../types/debate';
 import { useDebateStore } from '../store/debateStore';
-import { generateSpeakerContent } from './aiAgents';
-import { TranscriptEntry } from '../store/debateStore';
-
-// Define the structure for debate configuration
-interface DebateConfig {
-  motion: string;
-  startTime?: Date;
-  endTime?: Date;
-  transcript: TranscriptEntry[];
-}
+import { generateSpeakerContent, streamSpeakerContent } from './aiAgents';
+import { DebateState } from '../store/debateStore';
 
 // Debate engine class to orchestrate the debate
 class DebateEngine {
@@ -49,7 +41,7 @@ class DebateEngine {
   private async handleTurn(): Promise<void> {
     const state = this.store.getState();
     const currentSpeaker = state.currentSpeaker;
-    
+
     if (!currentSpeaker) {
       console.error('No current speaker set');
       return;
@@ -64,31 +56,32 @@ class DebateEngine {
           content: entry.content
         }));
 
-      // Generate content for the current speaker
-      const content = await generateSpeakerContent(
+      // Get stream generator for the current speaker
+      const streamGen = streamSpeakerContent(
         currentSpeaker,
         state.motion || '',
         previousStatements
       );
 
-      // Add the generated content to the transcript
-      this.store.getState().addTranscriptEntry({
-        speaker: content.role,
-        content: content.content,
-        type: 'speech',
-        wordCount: content.wordCount
-      });
+      // Pass to store to start streaming entry (fire-and-forget)
+      console.log(`Starting streaming for ${currentSpeaker}`);
+      const store = this.store.getState();
+      store.startStreamingEntry(currentSpeaker, streamGen);
 
       // Move to next speaker after a delay (simulating speaking time)
+      // Note: Streaming happens in background via hooks, engine just initiates it
       setTimeout(() => {
-        if (state.currentSpeakerIndex < state.speakingSequence.length - 1) {
+        const currentState = this.store.getState();
+        if (currentState.currentSpeakerIndex < currentState.speakingSequence.length - 1) {
           this.nextSpeaker();
         } else {
           this.endDebate();
         }
-      }, Math.min(content.wordCount * 100, 30000)); // Simulate speaking time based on content length (max 30 seconds per turn)
+      }, 30000); // Fixed 30 seconds per turn for now (will be refined based on actual streaming completion)
     } catch (error) {
       console.error(`Error handling turn for ${currentSpeaker}:`, error);
+      // Cancel streaming if it fails
+      this.store.getState().cancelStreamingEntry();
       // Move to next speaker even if there's an error
       this.nextSpeaker();
     }
@@ -200,7 +193,7 @@ class DebateEngine {
   /**
    * Gets the current debate state
    */
-  public getState(): typeof this.store.getState() {
+  public getState(): DebateState {
     return this.store.getState();
   }
 

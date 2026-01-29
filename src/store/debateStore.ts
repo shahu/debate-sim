@@ -61,7 +61,7 @@ export interface DebateState {
 }
 
 // Create the debate store
-export const useDebateStore = create<DebateState>((set, get) => ({
+export const useDebateStore = create<DebateState>((set) => ({
   // Initial state
   motion: null,
   status: 'idle',
@@ -175,7 +175,7 @@ export const useDebateStore = create<DebateState>((set, get) => ({
     }
   })),
 
-  startStreamingEntry: (speaker: SpeakerRole, streamGenerator: AsyncIterable<string>) => set((state) => ({
+  startStreamingEntry: (speaker: SpeakerRole, streamGenerator: AsyncIterable<string>) => set(() => ({
     streamingEntry: {
       id: `stream-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       speaker,
@@ -213,11 +213,6 @@ export const useDebateStore = create<DebateState>((set, get) => ({
 
   cancelStreamingEntry: () => set(() => ({
     streamingEntry: null
-  })),
-
-  pauseDebate: () => set((state) => ({
-    ...state,
-    status: 'paused'
   })),
 
   pauseDebate: () => set((state) => ({
