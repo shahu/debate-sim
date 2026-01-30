@@ -70,11 +70,11 @@ The CPDL Debate Simulator roadmap delivers a rich interactive web application th
 - [x] 03-03-PLAN.md — End-to-end integration and verification
 
 ### Phase 4 - Audio Enhancement
-**Goal:** Users can hear the debate with distinct voices for each role
+**Goal:** Users can hear of debate with distinct voices for each role
 
 **Dependencies:** Phase 1 (needs core mechanics), Phase 2 (needs UI), Phase 3 (needs streaming text as basis)
 
-**Plans:** 3 plans (2/3 complete)
+**Plans:** 3 plans (3/3 complete)
 
 **Requirements:** STRM-02, STRM-03, STRM-06
 
@@ -86,7 +86,7 @@ The CPDL Debate Simulator roadmap delivers a rich interactive web application th
 **Plans:**
 - [x] 04-01-PLAN.md — Audio foundation (voice registry + audio store)
 - [x] 04-02-PLAN.md — Audio controls UI (useAudioControls hook + AudioControls component)
-- [ ] 04-03-PLAN.md — TTS integration with role-based voices
+- [x] 04-03-PLAN.md — TTS integration with role-based voices
 
 ### Phase 5 - Judge Commentary
 **Goal:** Users receive post-debate scoring and detailed feedback
@@ -111,7 +111,7 @@ The CPDL Debate Simulator roadmap delivers a rich interactive web application th
 | Phase 1 | Complete | 2026-01-29 | 2026-01-29 | Foundation for entire application |
 | Phase 2 | Complete | 2026-01-29 | 2026-01-29 | Full UI experience with controls |
 | Phase 3 | Complete | 2026-01-30 | 2026-01-30 | Real-time streaming with ref-based accumulation and rAF throttling |
-| Phase 4 | In progress | 2026-01-30 | - | 2/3 plans complete (voice registry + audio store + audio controls UI) |
+| Phase 4 | Complete | 2026-01-30 | 2026-01-30 | Role-based TTS with voice registry, audio controls, and shared GainNode |
 | Phase 5 | Pending | - | - | Depends on Phases 1 & 2 completion |
 
 **Total Requirements Mapped:** 25/25 v1 requirements

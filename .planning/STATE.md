@@ -8,13 +8,13 @@
 
 ## Current Position
 
-**Current Phase:** 4 of 5 (Audio Enhancement) - In progress
-**Plan:** 2 of 3 in current phase
-**Status:** In progress
-**Last activity:** 2026-01-30 - Completed 04-02-PLAN.md
+**Current Phase:** 4 of 5 (Audio Enhancement) - Complete
+**Plan:** 3 of 3 in current phase
+**Status:** Phase complete, ready for Phase 5
+**Last activity:** 2026-01-30 - Completed 04-03-PLAN.md
 
 ```
-[██████████] 92% (11/12 plans)
+[██████████] 100% (12/12 plans)
 ```
 
 ## Performance Metrics
@@ -31,7 +31,8 @@
 - Phase 1 (Core Mechanics) - Complete
 - Phase 2 (UI Experience) - Complete
 - Phase 3 (Streaming) - Complete
-- Phase 4 (Audio Enhancement) - In progress
+- Phase 4 (Audio Enhancement) - Complete
+- Phase 5 (Judge Commentary) - Pending
 - Technology stack: React/Vite, TypeScript, Zustand, Tailwind CSS
 - Fire-and-forget streaming architecture (engine initiates, hooks manage)
 - Streaming generator pattern using async generators for real-time text
@@ -42,6 +43,9 @@
 - Web Audio API GainNode with setTargetAtTime for 20ms smooth volume transitions
 - Shared singleton GainNode (module-level refs) for global volume control
 - Lazy AudioContext initialization on user gesture (browser autoplay policy compliance)
+- Speaker role passed to TTS hook for automatic voice selection via getVoiceIdForRole()
+- Global isEnabled check in TTS generation respects AudioControls enable/disable toggle
+- Manual audio element creation in hook to applyGlobalVolume() before playback for shared GainNode connection
 
 ### Completed Work
 - Core types and debate state management
@@ -67,6 +71,11 @@
 - Audio store with global state management (volume, playback rate, mute, enable/disable)
 - useAudioControls hook with Web Audio API GainNode for smooth volume transitions
 - AudioControls component with volume slider (0-200%), speed slider (0.5x-2.5x), mute toggle, enable toggle
+- Role-based TTS voice selection via voice registry integration in useStreamingTTS hook
+- Global audio state integration (isEnabled check) in TTS generation
+- Shared GainNode connection for all TTS audio elements via applyGlobalVolume()
+- StreamingTranscriptEntry passes speaker role to TTS for distinct voices per speaker
+- AudioControls component visible in DebateDashboard for global audio control
 
 ### Blockers
 - None identified
@@ -87,5 +96,5 @@
 ## Session Continuity
 
 Last session: 2026-01-30
-Stopped at: Completed 04-02-PLAN.md (Audio controls UI)
-Resume file: `.planning/phases/04-audio-enhancement/04-02-SUMMARY.md`
+Stopped at: Completed 04-03-PLAN.md (TTS integration)
+Resume file: `.planning/phases/04-audio-enhancement/04-03-SUMMARY.md`
