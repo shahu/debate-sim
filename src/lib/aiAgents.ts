@@ -1,14 +1,13 @@
 /**
  * AI Agent implementation for CPDL debate roles
  * Creates AI agents with role-specific behavioral patterns and instructions
- * Uses Vercel AI SDK for content generation
+ * Uses Backend API for content generation (previously used Vercel AI SDK)
  */
 
-import { openai } from '@ai-sdk/openai';
-import { generateText, streamText } from 'ai';
-import { z } from 'zod';
 import { SpeakerRole } from '../types/debate';
 import { enforceRoleRules } from './debateRules';
+import { streamDebateResponse, generateDebateResponse } from '../api/debate';
+import type { ChatMessage } from '../api/types';
 
 interface SpeakerAgentConfig {
   role: SpeakerRole;
@@ -211,7 +210,20 @@ interface DebateContent {
 }
 
 /**
- * Generates content for the specified role using AI
+ * Builds the messages array for the LLM API
+ * @param systemPrompt - The system prompt for the role
+ * @param contextHistory - The debate context and history
+ * @returns Array of ChatMessage for the API
+ */
+function buildMessages(systemPrompt: string, contextHistory: string): ChatMessage[] {
+  return [
+    { role: 'system', content: systemPrompt },
+    { role: 'user', content: contextHistory }
+  ];
+}
+
+/**
+ * Generates content for the specified role using backend API
  * @param role The speaker role
  * @param motion The debate motion
  * @param previousStatements Previous statements in the debate
@@ -244,17 +256,11 @@ export const generateSpeakerContent = async (
     // Get the role-specific system prompt
     const rolePrompt = getSpeakerSystemPrompt(role);
 
-    const fullPrompt = contextHistory + `\n\n${rolePrompt}`;
+    // Build messages for API
+    const messages = buildMessages(rolePrompt, contextHistory);
 
-    // Generate text using Vercel AI SDK
-    const result = await generateText({
-      model: openai('gpt-4-turbo'),
-      prompt: fullPrompt,
-      temperature: 0.7, // Balanced for creativity and coherence
-    });
-
-    // Use the generated content directly
-    const generatedContent = result.text;
+    // Generate text using backend API
+    const generatedContent = await generateDebateResponse({ messages });
     const wordCount = generatedContent.split(/\s+/).length;
 
     return {
@@ -269,17 +275,18 @@ export const generateSpeakerContent = async (
 };
 
 /**
- * Streams content for specified role using AI
+ * Streams content for specified role using backend API
  * @param role The speaker role
  * @param motion The debate motion
  * @param previousStatements Previous statements in debate
  * @param povRequest Optional POI request to respond to
- * @returns Async generator yielding text chunks as they arrive from the AI
+ * @returns Async generator yielding text chunks as they arrive from the backend
  *
  * @remarks
  * This function provides real-time streaming of AI-generated content for a more natural debate experience.
  * Use this when you want to display content as it's generated, instead of waiting for full completion.
- * Both streaming (streamSpeakerContent) and non-streaming (generateSpeakerContent) versions coexist.
+ * 
+ * NOTE: Now uses backend API instead of direct ai-sdk calls for security (API keys are server-side only).
  *
  * @example
  * ```typescript
@@ -314,17 +321,14 @@ export async function* streamSpeakerContent(
     // Get the role-specific system prompt
     const rolePrompt = getSpeakerSystemPrompt(role);
 
-    const fullPrompt = contextHistory + `\n\n${rolePrompt}`;
+    // Build messages for API
+    const messages = buildMessages(rolePrompt, contextHistory);
 
-    // Stream text using Vercel AI SDK
-    const result = await streamText({
-      model: openai('gpt-4-turbo'),
-      prompt: fullPrompt,
-      temperature: 0.7, // Balanced for creativity and coherence
-    });
+    // Stream text using backend API via SSE
+    const stream = streamDebateResponse({ messages });
 
     // Yield chunks as they arrive from the stream
-    for await (const chunk of result.textStream) {
+    for await (const chunk of stream) {
       yield chunk;
     }
   } catch (error) {
