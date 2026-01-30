@@ -65,8 +65,17 @@
 - Third-party AI API access for DeepSeekV3
 - Web Speech API for TTS functionality (Phase 4)
 
+## Quick Tasks
+
+### Completed
+- **001-create-python-backend-llm-tts-api** (2026-01-30)
+  - Created Python FastAPI backend with DeepSeek streaming and TTS
+  - Refactored frontend to use backend API instead of direct SDK
+  - Removed @ai-sdk packages, API keys now server-side only
+  - SUMMARY: `.planning/quick/001-create-python-backend-llm-tts-api/001-SUMMARY.md`
+
 ## Session Continuity
 
 Last session: 2026-01-30
-Stopped at: Completed 03-03-PLAN.md (Phase 3 complete)
-Resume file: None
+Stopped at: Completed quick task 001 (Python backend creation)
+Resume file: `.planning/quick/001-create-python-backend-llm-tts-api/001-SUMMARY.md`
