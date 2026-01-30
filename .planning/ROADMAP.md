@@ -101,14 +101,17 @@ The CPDL Debate Simulator roadmap delivers a rich interactive web application th
 3. Detailed breakdown by evaluation criteria (content, rebuttal, POI handling, delivery, teamwork)
 4. Comparative analysis highlights differences between speakers' performances
 
+**Plans:**
+- [ ] TBD — Post-debate scoring system
+
 ## Progress Tracking
 
 | Phase | Status | Started | Completed | Notes |
 |-------|--------|---------|-----------|-------|
 | Phase 1 | Complete | 2026-01-29 | 2026-01-29 | Foundation for entire application |
 | Phase 2 | Complete | 2026-01-29 | 2026-01-29 | Full UI experience with controls |
-| Phase 3 | Complete | 2026-01-30 | Complete | Real-time streaming with ref-based accumulation and rAF throttling |
-| Phase 4 | Pending | - | - | Depends on Phases 1, 2 & 3 completion |
+| Phase 3 | Complete | 2026-01-30 | 2026-01-30 | Real-time streaming with ref-based accumulation and rAF throttling |
+| Phase 4 | Planned | 2026-01-30 | - | 3 plans in 3 waves (foundation → controls → integration) |
 | Phase 5 | Pending | - | - | Depends on Phases 1 & 2 completion |
 
 **Total Requirements Mapped:** 25/25 v1 requirements
