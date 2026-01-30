@@ -74,7 +74,7 @@ The CPDL Debate Simulator roadmap delivers a rich interactive web application th
 
 **Dependencies:** Phase 1 (needs core mechanics), Phase 2 (needs UI), Phase 3 (needs streaming text as basis)
 
-**Plans:** 3 plans (3/3 planned)
+**Plans:** 3 plans (1/3 complete)
 
 **Requirements:** STRM-02, STRM-03, STRM-06
 
@@ -84,7 +84,7 @@ The CPDL Debate Simulator roadmap delivers a rich interactive web application th
 3. Audio controls allow user to adjust volume and playback during the debate
 
 **Plans:**
-- [ ] 04-01-PLAN.md — Audio foundation (voice registry + audio store)
+- [x] 04-01-PLAN.md — Audio foundation (voice registry + audio store)
 - [ ] 04-02-PLAN.md — Audio controls UI (useAudioControls hook + AudioControls component)
 - [ ] 04-03-PLAN.md — TTS integration with role-based voices
 
@@ -111,7 +111,7 @@ The CPDL Debate Simulator roadmap delivers a rich interactive web application th
 | Phase 1 | Complete | 2026-01-29 | 2026-01-29 | Foundation for entire application |
 | Phase 2 | Complete | 2026-01-29 | 2026-01-29 | Full UI experience with controls |
 | Phase 3 | Complete | 2026-01-30 | 2026-01-30 | Real-time streaming with ref-based accumulation and rAF throttling |
-| Phase 4 | Planned | 2026-01-30 | - | 3 plans in 3 waves (foundation → controls → integration) |
+| Phase 4 | In progress | 2026-01-30 | - | 1/3 plans complete (voice registry + audio store) |
 | Phase 5 | Pending | - | - | Depends on Phases 1 & 2 completion |
 
 **Total Requirements Mapped:** 25/25 v1 requirements

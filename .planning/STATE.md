@@ -4,17 +4,17 @@
 
 **Core Value:** Competitive debaters can practice realistic CPDL debates against AI opponents that strictly follow debate rules and provide sophisticated feedback, enabling them to improve their argumentation, rebuttal, and POI handling skills in a controlled environment.
 
-**Current Focus:** Phase 3 - Streaming - implementing real-time text streaming
+**Current Focus:** Phase 4 - Audio Enhancement - implementing voice-based TTS
 
 ## Current Position
 
-**Current Phase:** 3 of 5 (Streaming) - Complete
-**Plan:** 3 of 3 in current phase - Complete
-**Status:** Phase complete, ready for Phase 4
-**Last activity:** 2026-01-30 - Completed 03-03-PLAN.md
+**Current Phase:** 4 of 5 (Audio Enhancement) - In progress
+**Plan:** 1 of 3 in current phase
+**Status:** In progress
+**Last activity:** 2026-01-30 - Completed 04-01-PLAN.md
 
 ```
-[██████████] 100% (9/9 plans)
+[█████████░] 83% (10/12 plans)
 ```
 
 ## Performance Metrics
@@ -31,11 +31,14 @@
 - Phase 1 (Core Mechanics) - Complete
 - Phase 2 (UI Experience) - Complete
 - Phase 3 (Streaming) - Complete
+- Phase 4 (Audio Enhancement) - In progress
 - Technology stack: React/Vite, TypeScript, Zustand, Tailwind CSS
 - Fire-and-forget streaming architecture (engine initiates, hooks manage)
 - Streaming generator pattern using async generators for real-time text
 - Store-based streaming lifecycle (startStreamingEntry → finalizeStreamingEntry)
 - Error handling with cancelStreamingEntry for clean state cleanup
+- Voice registry dual provider architecture (pyttsx3 local + ElevenLabs cloud)
+- Runtime-only audio state (no localStorage persistence for simplicity)
 
 ### Completed Work
 - Core types and debate state management
@@ -57,6 +60,8 @@
 - Fire-and-forget streaming architecture in debate engine
 - Automatic streaming initiation on debate start
 - Error handling with streaming cancellation cleanup
+- Voice registry with role-based voice mappings for pyttsx3 and ElevenLabs
+- Audio store with global state management (volume, playback rate, mute, enable/disable)
 
 ### Blockers
 - None identified
@@ -77,5 +82,5 @@
 ## Session Continuity
 
 Last session: 2026-01-30
-Stopped at: Completed quick task 001 (Python backend creation)
-Resume file: `.planning/quick/001-create-python-backend-llm-tts-api/001-SUMMARY.md`
+Stopped at: Completed 04-01-PLAN.md (Audio foundation)
+Resume file: `.planning/phases/04-audio-enhancement/04-01-SUMMARY.md`
