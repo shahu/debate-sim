@@ -55,7 +55,7 @@ The CPDL Debate Simulator roadmap delivers a rich interactive web application th
 
 **Dependencies:** Phase 1 (needs core mechanics), Phase 2 (needs UI to display stream)
 
-**Plans:** 3 plans (1/3 complete)
+**Plans:** 3 plans (3/3 complete)
 
 **Requirements:** STRM-01, STRM-04, STRM-05
 
@@ -66,13 +66,15 @@ The CPDL Debate Simulator roadmap delivers a rich interactive web application th
 
 **Plans:**
 - [x] 03-01-PLAN.md — AI streaming foundation with buffered display hook
-- [ ] 03-02-PLAN.md — UI components for real-time streaming transcript
-- [ ] 03-03-PLAN.md — End-to-end integration and verification
+- [x] 03-02-PLAN.md — UI components for real-time streaming transcript
+- [x] 03-03-PLAN.md — End-to-end integration and verification
 
 ### Phase 4 - Audio Enhancement
 **Goal:** Users can hear the debate with distinct voices for each role
 
 **Dependencies:** Phase 1 (needs core mechanics), Phase 2 (needs UI), Phase 3 (needs streaming text as basis)
+
+**Plans:** 3 plans (3/3 planned)
 
 **Requirements:** STRM-02, STRM-03, STRM-06
 
@@ -80,6 +82,11 @@ The CPDL Debate Simulator roadmap delivers a rich interactive web application th
 1. Each role has a distinct voice characteristic (pitch, tone, etc.) for audio output
 2. TTS voice synthesis provides audio output for each role during streaming
 3. Audio controls allow user to adjust volume and playback during the debate
+
+**Plans:**
+- [ ] 04-01-PLAN.md — Audio foundation (voice registry + audio store)
+- [ ] 04-02-PLAN.md — Audio controls UI (useAudioControls hook + AudioControls component)
+- [ ] 04-03-PLAN.md — TTS integration with role-based voices
 
 ### Phase 5 - Judge Commentary
 **Goal:** Users receive post-debate scoring and detailed feedback
