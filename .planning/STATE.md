@@ -9,12 +9,12 @@
 ## Current Position
 
 **Current Phase:** 4 of 5 (Audio Enhancement) - In progress
-**Plan:** 1 of 3 in current phase
+**Plan:** 2 of 3 in current phase
 **Status:** In progress
-**Last activity:** 2026-01-30 - Completed 04-01-PLAN.md
+**Last activity:** 2026-01-30 - Completed 04-02-PLAN.md
 
 ```
-[█████████░] 83% (10/12 plans)
+[██████████] 92% (11/12 plans)
 ```
 
 ## Performance Metrics
@@ -39,6 +39,9 @@
 - Error handling with cancelStreamingEntry for clean state cleanup
 - Voice registry dual provider architecture (pyttsx3 local + ElevenLabs cloud)
 - Runtime-only audio state (no localStorage persistence for simplicity)
+- Web Audio API GainNode with setTargetAtTime for 20ms smooth volume transitions
+- Shared singleton GainNode (module-level refs) for global volume control
+- Lazy AudioContext initialization on user gesture (browser autoplay policy compliance)
 
 ### Completed Work
 - Core types and debate state management
@@ -62,6 +65,8 @@
 - Error handling with streaming cancellation cleanup
 - Voice registry with role-based voice mappings for pyttsx3 and ElevenLabs
 - Audio store with global state management (volume, playback rate, mute, enable/disable)
+- useAudioControls hook with Web Audio API GainNode for smooth volume transitions
+- AudioControls component with volume slider (0-200%), speed slider (0.5x-2.5x), mute toggle, enable toggle
 
 ### Blockers
 - None identified
@@ -82,5 +87,5 @@
 ## Session Continuity
 
 Last session: 2026-01-30
-Stopped at: Completed 04-01-PLAN.md (Audio foundation)
-Resume file: `.planning/phases/04-audio-enhancement/04-01-SUMMARY.md`
+Stopped at: Completed 04-02-PLAN.md (Audio controls UI)
+Resume file: `.planning/phases/04-audio-enhancement/04-02-SUMMARY.md`
