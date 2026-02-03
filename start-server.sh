@@ -9,8 +9,8 @@
 # Options:
 #   --debug    Enable debug mode (logs all prompts and responses)
 
-# Pre-configured API Key (set your DeepSeekV3 key here)
-DEFAULT_DEEPSEEK_API_KEY="sk-a9a6b8388e1c4cf586d7b96b6c8570cb"
+# Pre-configured API Key (optional - environment variables preferred)
+DEFAULT_DEEPSEEK_API_KEY=""
 
 # Configuration
 BACKEND_PORT=8000
