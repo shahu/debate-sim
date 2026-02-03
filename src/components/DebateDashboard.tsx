@@ -10,18 +10,21 @@ import { StartDebateButton } from './StartDebateButton';
 import { POIControls } from './POIControls';
 import { SpeakerRole } from '../types/debate';
 import { AudioControls } from './AudioControls';
+import { JudgeScorecard } from './judge/JudgeScorecard';
 
 export function DebateDashboard() {
   const { 
     currentSpeaker, 
     timeRemaining, 
     status, 
-    motion: storeMotion
+    motion: storeMotion,
+    judgeEvaluation
   } = useDebateStore();
 
   const [motionInput, setMotionInput] = useState('');
   const isRunning = status === 'active';
   const isIdle = status === 'idle';
+  const isCompleted = status === 'completed';
 
   return (
     <div className="space-y-6">
@@ -55,7 +58,7 @@ export function DebateDashboard() {
         </div>
       )}
 
-      {/* Motion Display - When debate is active */}
+      {/* Motion Display - When debate is active or completed */}
       {!isIdle && storeMotion && (
         <div className="bg-white rounded-xl p-4 shadow-sm border-l-4 border-indigo-500 animate-fade-in">
           <div className="text-xs font-semibold text-indigo-600 uppercase tracking-wider mb-1">
@@ -67,8 +70,15 @@ export function DebateDashboard() {
         </div>
       )}
 
-      {/* Speaker and Timer Section - Only when not idle */}
-      {!isIdle && (
+      {/* Judge Commentary Section - Only when completed and judge evaluation exists */}
+      {isCompleted && judgeEvaluation && (
+        <div className="animate-fade-in">
+          <JudgeScorecard feedback={judgeEvaluation.feedback} />
+        </div>
+      )}
+
+      {/* Speaker and Timer Section - Only when not idle and not completed */}
+      {!isIdle && !isCompleted && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-fade-in">
           {/* Current Speaker Indicator */}
           <div key={currentSpeaker || 'none'} className="animate-speaker-pop">
@@ -83,8 +93,8 @@ export function DebateDashboard() {
         </div>
       )}
 
-      {/* Controls Section - Only when not idle */}
-      {!isIdle && (
+      {/* Controls Section - Only when not idle and not completed */}
+      {!isIdle && !isCompleted && (
         <div className="space-y-4 animate-fade-in">
           <DebateControls />
           <POIControls />
@@ -94,8 +104,16 @@ export function DebateDashboard() {
       {/* Audio Controls - Always visible */}
       <AudioControls className="animate-fade-in" />
 
-      {/* Transcript Section - Always visible but different states */}
-      <TranscriptPanel />
+      {/* Transcript Section - Visible during active debate, hidden when judge commentary is shown */}
+      {!isCompleted || !judgeEvaluation ? (
+        <TranscriptPanel />
+      ) : (
+        <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+          <div className="text-center text-gray-600">
+            Debate transcript and judge commentary are available above
+          </div>
+        </div>
+      )}
 
       {/* Status Bar - Always visible */}
       <div className="bg-gray-800 text-white rounded-lg p-3 flex items-center justify-between">

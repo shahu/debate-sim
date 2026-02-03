@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import { SpeakerRole } from '../types/debate';
 import { DebateTimer } from '../hooks/useDebateTimer';
 import { debateEngine } from '../lib/debateEngine';
+import { JudgeEvaluation } from '../types/judge';
+import { analyzeDebateTranscript } from '../lib/scoringSystem';
 
 // Define the structure for debate transcript entries
 export interface TranscriptEntry {
@@ -39,6 +41,9 @@ export interface DebateState {
     streamGenerator: AsyncIterable<string> | null;
   } | null;
 
+  // Judge evaluation
+  judgeEvaluation: JudgeEvaluation | null;
+
   // Debate statistics
   statistics: {
     totalWords: number;
@@ -59,6 +64,8 @@ export interface DebateState {
   startStreamingEntry: (speaker: SpeakerRole, streamGenerator: AsyncIterable<string>) => void;
   finalizeStreamingEntry: (finalText: string, wordCount: number) => void;
   cancelStreamingEntry: () => void;
+  generateJudgeEvaluation: () => void;
+  resetJudgeEvaluation: () => void;
 }
 
 // Create the debate store
@@ -73,6 +80,7 @@ export const useDebateStore = create<DebateState>((set) => ({
   timeRemaining: 0,
   transcript: [],
   streamingEntry: null,
+  judgeEvaluation: null,
   statistics: {
     totalWords: 0,
     avgWordsPerSpeaker: 0,
@@ -174,6 +182,7 @@ export const useDebateStore = create<DebateState>((set) => ({
     timeRemaining: 0,
     transcript: [],
     streamingEntry: null,
+    judgeEvaluation: null,
     statistics: {
       totalWords: 0,
       avgWordsPerSpeaker: 0,
@@ -258,9 +267,31 @@ export const useDebateStore = create<DebateState>((set) => ({
     status: 'active'
   })),
 
-  endDebate: () => set((state) => ({
-    ...state,
-    status: 'completed'
+  endDebate: () => {
+    set((state) => ({
+      ...state,
+      status: 'completed'
+    }));
+    
+    // Generate judge evaluation after state update 
+    setTimeout(() => {
+      useDebateStore.getState().generateJudgeEvaluation();
+    }, 0);
+  },
+  
+  generateJudgeEvaluation: () => set((state) => {
+    if (state.transcript.length > 0) {
+      const evaluation = analyzeDebateTranscript(state.transcript, state.motion || undefined);
+      return {
+        ...state,
+        judgeEvaluation: evaluation
+      };
+    }
+    return state;
+  }),
+  
+  resetJudgeEvaluation: () => set(() => ({
+    judgeEvaluation: null
   }))
 }));
 
