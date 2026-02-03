@@ -34,11 +34,11 @@
 ### Streaming & Audio
 
 - [x] **STRM-01**: Text output streams in real-time as AI generates content
-- [ ] **STRM-02**: TTS voice synthesis provides audio output for each role
-- [ ] **STRM-03**: Each role has a distinct voice characteristic (pitch, tone, etc.)
-- [ ] **STRM-04**: Streaming text and audio are synchronized for natural feel
-- [ ] **STRM-05**: TTS latency is minimized to maintain natural debate rhythm
-- [ ] **STRM-06**: Audio controls allow user to adjust volume and playback
+- [x] **STRM-02**: TTS voice synthesis provides audio output for each role
+- [x] **STRM-03**: Each role has a distinct voice characteristic (pitch, tone, etc.)
+- [x] **STRM-04**: Streaming text and audio are synchronized for natural feel
+- [x] **STRM-05**: TTS latency is minimized to maintain natural debate rhythm
+- [x] **STRM-06**: Audio controls allow user to adjust volume and playback
 
 ### Scoring & Feedback
 
@@ -90,12 +90,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | UI-04 | Phase 2 | Complete |
 | UI-05 | Phase 2 | Complete |
 | UI-06 | Phase 2 | Complete |
-| STRM-01 | Phase 3 | Pending |
-| STRM-04 | Phase 3 | Pending |
-| STRM-05 | Phase 3 | Pending |
-| STRM-02 | Phase 4 | Pending |
-| STRM-03 | Phase 4 | Pending |
-| STRM-06 | Phase 4 | Pending |
+| STRM-01 | Phase 3 | Complete |
+| STRM-04 | Phase 3 | Complete |
+| STRM-05 | Phase 3 | Complete |
+| STRM-02 | Phase 4 | Complete |
+| STRM-03 | Phase 4 | Complete |
+| STRM-06 | Phase 4 | Complete |
 | SCOR-01 | Phase 5 | Complete |
 | SCOR-02 | Phase 5 | Complete |
 | SCOR-03 | Phase 5 | Complete |
