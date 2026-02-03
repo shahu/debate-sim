@@ -42,11 +42,11 @@
 
 ### Scoring & Feedback
 
-- [ ] **SCOR-01**: Post-debate scoring provides numerical scores for each participant
-- [ ] **SCOR-02**: Judge-like narrative commentary explains strengths and weaknesses of each speaker
-- [ ] **SCOR-03**: Detailed breakdown by evaluation criteria (content, rebuttal, POI handling, delivery, teamwork)
-- [ ] **SCOR-04**: Comparative analysis highlights differences between speakers' performances
-- [ ] **SCOR-05**: Judges provide specific examples from the debate to justify their assessments
+- [x] **SCOR-01**: Post-debate scoring provides numerical scores for each participant
+- [x] **SCOR-02**: Judge-like narrative commentary explains strengths and weaknesses of each speaker
+- [x] **SCOR-03**: Detailed breakdown by evaluation criteria (content, rebuttal, POI handling, delivery, teamwork)
+- [x] **SCOR-04**: Comparative analysis highlights differences between speakers' performances
+- [x] **SCOR-05**: Judges provide specific examples from the debate to justify their assessments
 
 ## v2 Requirements
 
@@ -96,11 +96,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | STRM-02 | Phase 4 | Pending |
 | STRM-03 | Phase 4 | Pending |
 | STRM-06 | Phase 4 | Pending |
-| SCOR-01 | Phase 5 | Pending |
-| SCOR-02 | Phase 5 | Pending |
-| SCOR-03 | Phase 5 | Pending |
-| SCOR-04 | Phase 5 | Pending |
-| SCOR-05 | Phase 5 | Pending |
+| SCOR-01 | Phase 5 | Complete |
+| SCOR-02 | Phase 5 | Complete |
+| SCOR-03 | Phase 5 | Complete |
+| SCOR-04 | Phase 5 | Complete |
+| SCOR-05 | Phase 5 | Complete |
 
 **Coverage:**
 - v1 requirements: 25 total
