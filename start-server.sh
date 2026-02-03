@@ -266,6 +266,16 @@ else
     echo -e "${YELLOW}⚠${NC}  Running without API key"
 fi
 
+# Build frontend
+echo -e "${CYAN}▶${NC} Building frontend..."
+npm run build
+if [ $? -ne 0 ]; then
+    echo -e "${RED}✗${NC} Frontend build failed"
+    kill $BACKEND_PID 2>/dev/null || true
+    exit 1
+fi
+echo -e "${GREEN}✓${NC} Frontend build successful"
+
 echo ""
 echo -e "${CYAN}▶${NC} Starting frontend dev server on port $FRONTEND_PORT..."
 npm run dev > /tmp/frontend.log 2>&1 &
