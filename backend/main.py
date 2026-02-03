@@ -4,6 +4,7 @@ Provides endpoints for debate streaming and TTS generation.
 """
 
 import json
+import logging
 from contextlib import asynccontextmanager
 from typing import List, Optional
 
@@ -15,6 +16,15 @@ from pydantic import BaseModel
 from src.config import get_settings
 from src.debate import stream_debate_response, generate_debate_response
 from src.tts import generate_tts, get_available_voices
+
+# Configure logging
+settings = get_settings()
+log_level = logging.DEBUG if settings.debug else logging.INFO
+logging.basicConfig(
+    level=log_level,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
 
 
 # Pydantic models for request/response
@@ -54,6 +64,8 @@ async def lifespan(app: FastAPI):
     print(f"Starting Debate Backend on {settings.host}:{settings.port}")
     print(f"CORS origins: {settings.cors_origins}")
     print(f"TTS Provider: {settings.tts_provider}")
+    if settings.debug:
+        print("🔍 DEBUG MODE ENABLED - All prompts and responses will be logged")
     yield
     # Shutdown
     print("Shutting down Debate Backend")
@@ -101,7 +113,7 @@ async def debate_stream(request: DebateStreamRequest):
             async for chunk in stream_debate_response(
                 messages=messages,
                 model=request.model,
-                temperature=request.temperature
+                temperature=request.temperature or 0.7
             ):
                 yield chunk
         
@@ -132,7 +144,7 @@ async def debate_generate(request: DebateResponseRequest):
         response = await generate_debate_response(
             messages=messages,
             model=request.model,
-            temperature=request.temperature
+            temperature=request.temperature or 0.7
         )
         
         return {"content": response}

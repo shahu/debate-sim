@@ -1,0 +1,19 @@
+# Node
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+.env
+.DS_Store
+.idea/
+.vscode/
+
+# Backend specific
+backend/.requirements_installed

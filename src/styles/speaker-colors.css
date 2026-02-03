@@ -1,0 +1,72 @@
+/* Speaker role color definitions for CPDL Debate Simulator */
+
+:root {
+  /* Primary role colors */
+  --color-pm: #3B82F6;      /* Blue - Prime Minister */
+  --color-pm-light: #DBEAFE;
+  --color-lo: #EF4444;      /* Red - Leader of Opposition */
+  --color-lo-light: #FEE2E2;
+  --color-mo: #F97316;      /* Orange - Member of Opposition */
+  --color-mo-light: #FFEDD5;
+  --color-pw: #22C55E;      /* Green - Prime Minister's Whip */
+  --color-pw-light: #DCFCE7;
+}
+
+/* Speaker Card Styles - Left border accent with light background */
+.speaker-card-pm {
+  border-left: 4px solid var(--color-pm);
+  background: var(--color-pm-light);
+}
+
+.speaker-card-lo {
+  border-left: 4px solid var(--color-lo);
+  background: var(--color-lo-light);
+}
+
+.speaker-card-mo {
+  border-left: 4px solid var(--color-mo);
+  background: var(--color-mo-light);
+}
+
+.speaker-card-pw {
+  border-left: 4px solid var(--color-pw);
+  background: var(--color-pw-light);
+}
+
+/* Role Badge Styles - Solid color with white text */
+.role-badge-pm {
+  background: var(--color-pm);
+  color: white;
+}
+
+.role-badge-lo {
+  background: var(--color-lo);
+  color: white;
+}
+
+.role-badge-mo {
+  background: var(--color-mo);
+  color: white;
+}
+
+.role-badge-pw {
+  background: var(--color-pw);
+  color: white;
+}
+
+/* Hover effects for speaker cards */
+.speaker-card-pm:hover {
+  border-left-width: 6px;
+}
+
+.speaker-card-lo:hover {
+  border-left-width: 6px;
+}
+
+.speaker-card-mo:hover {
+  border-left-width: 6px;
+}
+
+.speaker-card-pw:hover {
+  border-left-width: 6px;
+}

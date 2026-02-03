@@ -29,22 +29,26 @@ class Settings(BaseSettings):
     # TTS Provider Configuration
     tts_provider: str = os.getenv("TTS_PROVIDER", "pyttsx3")
     
-    # CORS Configuration
+    # Server Configuration
+    host: str = "0.0.0.0"
+    port: int = 8000
+    
+    # Debug Configuration
+    debug: bool = os.getenv("DEBUG", "false").lower() == "true"
+    
     @property
     def cors_origins(self) -> List[str]:
+        """Parse CORS origins from environment variable."""
         origins_str = os.getenv("CORS_ORIGINS", '["http://localhost:5173"]')
         try:
             return json.loads(origins_str)
         except json.JSONDecodeError:
             return ["http://localhost:5173"]
     
-    # Server Configuration
-    host: str = "0.0.0.0"
-    port: int = 8000
-    
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
+        extra = "ignore"  # Ignore extra env vars that don't match fields
 
 
 @lru_cache()

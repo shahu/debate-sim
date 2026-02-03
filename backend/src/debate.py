@@ -4,11 +4,15 @@ Provides functions for streaming debate responses using Server-Sent Events (SSE)
 """
 
 import json
+import logging
 from typing import AsyncGenerator, List, Optional
 
 from openai import AsyncOpenAI
 
 from .config import get_settings
+
+# Setup logging
+logger = logging.getLogger(__name__)
 
 
 async def stream_debate_response(
@@ -48,6 +52,18 @@ async def stream_debate_response(
     )
     
     try:
+        # Debug logging
+        if settings.debug:
+            logger.debug("=" * 80)
+            logger.debug("DEEPSEEK REQUEST - STREAMING")
+            logger.debug("=" * 80)
+            logger.debug(f"Model: {model or settings.deepseek_model}")
+            logger.debug(f"Temperature: {temperature}")
+            logger.debug("Messages:")
+            for i, msg in enumerate(messages):
+                logger.debug(f"  [{i}] {msg['role']}: {msg['content'][:200]}...")
+            logger.debug("=" * 80)
+        
         # Create streaming completion
         stream = await client.chat.completions.create(
             model=model or settings.deepseek_model,
@@ -57,13 +73,25 @@ async def stream_debate_response(
         )
         
         # Stream chunks as SSE
+        full_response = ""
         async for chunk in stream:
             if chunk.choices and chunk.choices[0].delta.content:
+                content = chunk.choices[0].delta.content
+                full_response += content
                 data = {
-                    "content": chunk.choices[0].delta.content,
+                    "content": content,
                     "done": False
                 }
                 yield f"data: {json.dumps(data)}\n\n"
+        
+        # Debug logging for complete response
+        if settings.debug:
+            logger.debug("=" * 80)
+            logger.debug("DEEPSEEK RESPONSE - STREAMING")
+            logger.debug("=" * 80)
+            logger.debug(f"Response length: {len(full_response)} chars")
+            logger.debug(f"Response preview: {full_response[:500]}...")
+            logger.debug("=" * 80)
         
         # Send final done message
         yield f"data: {json.dumps({'done': True})}\n\n"
@@ -94,6 +122,18 @@ async def generate_debate_response(
     if not settings.deepseek_api_key:
         raise ValueError("DeepSeek API key not configured")
     
+    # Debug logging
+    if settings.debug:
+        logger.debug("=" * 80)
+        logger.debug("DEEPSEEK REQUEST - NON-STREAMING")
+        logger.debug("=" * 80)
+        logger.debug(f"Model: {model or settings.deepseek_model}")
+        logger.debug(f"Temperature: {temperature}")
+        logger.debug("Messages:")
+        for i, msg in enumerate(messages):
+            logger.debug(f"  [{i}] {msg['role']}: {msg['content'][:200]}...")
+        logger.debug("=" * 80)
+    
     client = AsyncOpenAI(
         api_key=settings.deepseek_api_key,
         base_url=settings.deepseek_base_url
@@ -106,4 +146,15 @@ async def generate_debate_response(
         stream=False
     )
     
-    return response.choices[0].message.content
+    content = response.choices[0].message.content
+    
+    # Debug logging for response
+    if settings.debug:
+        logger.debug("=" * 80)
+        logger.debug("DEEPSEEK RESPONSE - NON-STREAMING")
+        logger.debug("=" * 80)
+        logger.debug(f"Response length: {len(content)} chars")
+        logger.debug(f"Response preview: {content[:500]}...")
+        logger.debug("=" * 80)
+    
+    return content

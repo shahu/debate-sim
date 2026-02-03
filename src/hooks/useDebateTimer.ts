@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-import { DebateTimer, SpeakerRole } from '../types/debate';
+import { DebateTimer as DebateTimerType, SpeakerRole } from '../types/debate';
 import { DEFAULT_TIMERS } from '../lib/constants';
+
+// Re-export DebateTimer type for use in store
+export type DebateTimer = DebateTimerType;
 
 interface UseDebateTimerProps {
   initialTime?: number;
@@ -10,7 +13,7 @@ interface UseDebateTimerProps {
 }
 
 export const useDebateTimer = ({ initialTime, role, onTick, onTimeout }: UseDebateTimerProps = {}) => {
-  const [timer, setTimer] = useState<DebateTimer>({
+  const [timer, setTimer] = useState<DebateTimerType>({
     timeRemaining: initialTime || (role ? DEFAULT_TIMERS[role] : 0),
     isRunning: false,
     startTime: undefined,

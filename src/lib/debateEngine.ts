@@ -1,13 +1,43 @@
 import { SpeakerRole } from '../types/debate';
-import { useDebateStore } from '../store/debateStore';
 import { generateSpeakerContent, streamSpeakerContent } from './aiAgents';
-import { DebateState } from '../store/debateStore';
+import { timerService } from './timerService';
+import type { DebateState } from '../store/debateStore';
+
+// Store interface for type safety
+interface StoreActions {
+  getState: () => DebateState;
+  startDebate: (motion: string) => void;
+  nextSpeaker: () => void;
+  addTranscriptEntry: (entry: any) => void;
+  startStreamingEntry: (speaker: SpeakerRole, streamGenerator: AsyncIterable<string>) => void;
+  cancelStreamingEntry: () => void;
+  endDebate: () => void;
+  pauseDebate: () => void;
+  resumeDebate: () => void;
+  resetDebate: () => void;
+}
 
 // Debate engine class to orchestrate the debate
 class DebateEngine {
-  private store = useDebateStore;
   private isRunning: boolean = false;
-  private intervalId: NodeJS.Timeout | null = null;
+  private storeActions: StoreActions | null = null;
+  
+  /**
+   * Sets the store actions - must be called before using the engine
+   */
+  public setStore(actions: StoreActions): void {
+    this.storeActions = actions;
+  }
+  
+  /**
+   * Gets current store state
+   */
+  private getState(): DebateState {
+    if (!this.storeActions) {
+      throw new Error('Store not initialized. Call setStore() first.');
+    }
+    return this.storeActions.getState();
+  }
 
   /**
    * Starts a new debate with the given motion
@@ -19,9 +49,17 @@ class DebateEngine {
       return;
     }
 
+    if (!this.storeActions) {
+      console.error('Store not initialized');
+      return;
+    }
+
     // Initialize debate state
-    this.store.getState().startDebate(motion);
+    this.storeActions.startDebate(motion);
     this.isRunning = true;
+    
+    // Start the timer countdown
+    timerService.start();
     
     // Start the first speaker's turn
     this.handleTurn();
@@ -31,7 +69,12 @@ class DebateEngine {
    * Advances to the next speaker in the sequence
    */
   public nextSpeaker(): void {
-    this.store.getState().nextSpeaker();
+    console.log('[DebateEngine] nextSpeaker() called');
+    if (!this.storeActions) {
+      console.error('[DebateEngine] Store not initialized!');
+      return;
+    }
+    this.storeActions.nextSpeaker();
     this.handleTurn();
   }
 
@@ -39,7 +82,9 @@ class DebateEngine {
    * Handles the current speaker's turn, including content generation
    */
   private async handleTurn(): Promise<void> {
-    const state = this.store.getState();
+    if (!this.storeActions) return;
+    
+    const state = this.getState();
     const currentSpeaker = state.currentSpeaker;
 
     if (!currentSpeaker) {
@@ -65,23 +110,14 @@ class DebateEngine {
 
       // Pass to store to start streaming entry (fire-and-forget)
       console.log(`Starting streaming for ${currentSpeaker}`);
-      const store = this.store.getState();
-      store.startStreamingEntry(currentSpeaker, streamGen);
+      this.storeActions.startStreamingEntry(currentSpeaker, streamGen);
 
-      // Move to next speaker after a delay (simulating speaking time)
-      // Note: Streaming happens in background via hooks, engine just initiates it
-      setTimeout(() => {
-        const currentState = this.store.getState();
-        if (currentState.currentSpeakerIndex < currentState.speakingSequence.length - 1) {
-          this.nextSpeaker();
-        } else {
-          this.endDebate();
-        }
-      }, 30000); // Fixed 30 seconds per turn for now (will be refined based on actual streaming completion)
+      // Timer service handles auto-advancing speakers when time runs out
+      // Streaming happens in background via hooks, engine just initiates it
     } catch (error) {
       console.error(`Error handling turn for ${currentSpeaker}:`, error);
       // Cancel streaming if it fails
-      this.store.getState().cancelStreamingEntry();
+      this.storeActions.cancelStreamingEntry();
       // Move to next speaker even if there's an error
       this.nextSpeaker();
     }
@@ -93,7 +129,9 @@ class DebateEngine {
    * @param poiContent The content of the POI
    */
   public async handlePOI(requester: SpeakerRole, poiContent: string): Promise<void> {
-    const state = this.store.getState();
+    if (!this.storeActions) return;
+    
+    const state = this.getState();
     const currentSpeaker = state.currentSpeaker;
     
     if (!currentSpeaker) {
@@ -102,7 +140,7 @@ class DebateEngine {
     }
 
     // Add POI request to transcript
-    this.store.getState().addTranscriptEntry({
+    this.storeActions.addTranscriptEntry({
       speaker: requester,
       content: poiContent,
       type: 'poi-request'
@@ -126,7 +164,7 @@ class DebateEngine {
       );
 
       // Add POI response to transcript
-      this.store.getState().addTranscriptEntry({
+      this.storeActions.addTranscriptEntry({
         speaker: currentSpeaker,
         content: content.content,
         type: 'poi-response',
@@ -136,7 +174,7 @@ class DebateEngine {
       console.error(`Error handling POI for ${currentSpeaker}:`, error);
       
       // Add default response if AI generation fails
-      this.store.getState().addTranscriptEntry({
+      this.storeActions.addTranscriptEntry({
         speaker: currentSpeaker,
         content: "I'm unable to address that POI right now, please continue with your argument.",
         type: 'poi-response'
@@ -153,13 +191,13 @@ class DebateEngine {
       return;
     }
 
-    this.store.getState().endDebate();
+    if (this.storeActions) {
+      this.storeActions.endDebate();
+    }
     this.isRunning = false;
     
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-      this.intervalId = null;
-    }
+    // Stop the timer
+    timerService.stop();
   }
 
   /**
@@ -171,30 +209,41 @@ class DebateEngine {
       return;
     }
 
-    this.store.getState().pauseDebate();
+    if (this.storeActions) {
+      this.storeActions.pauseDebate();
+    }
     this.isRunning = false;
+    
+    // Pause the timer
+    timerService.pause();
   }
 
   /**
    * Resumes the debate
    */
   public resumeDebate(): void {
-    const state = this.store.getState();
+    const state = this.getState();
     if (state.status !== 'paused') {
       console.warn('Debate is not paused');
       return;
     }
 
-    this.store.getState().resumeDebate();
+    if (this.storeActions) {
+      this.storeActions.resumeDebate();
+    }
     this.isRunning = true;
+    
+    // Resume the timer
+    timerService.resume();
+    
     this.handleTurn(); // Continue with current speaker's turn
   }
 
   /**
    * Gets the current debate state
    */
-  public getState(): DebateState {
-    return this.store.getState();
+  public getCurrentState(): DebateState {
+    return this.getState();
   }
 
   /**
@@ -202,14 +251,16 @@ class DebateEngine {
    */
   public reset(): void {
     this.endDebate();
-    this.store.getState().resetDebate();
+    if (this.storeActions) {
+      this.storeActions.resetDebate();
+    }
   }
 
   /**
    * Checks if the debate is currently active
    */
   public isActive(): boolean {
-    return this.isRunning && this.store.getState().status === 'active';
+    return this.isRunning && this.getState().status === 'active';
   }
 }
 

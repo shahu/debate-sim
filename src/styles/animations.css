@@ -1,0 +1,104 @@
+/* Animations for smooth UI transitions */
+
+/* Fade in for new content */
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(10px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+/* Pulse for timer warning */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Slide in for new transcript entries */
+@keyframes slideIn {
+  from { 
+    opacity: 0; 
+    transform: translateX(-20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateX(0); 
+  }
+}
+
+/* Scale pop for speaker changes */
+@keyframes speakerPop {
+  0% { 
+    transform: scale(0.9); 
+    opacity: 0.5; 
+  }
+  50% { 
+    transform: scale(1.05); 
+  }
+  100% { 
+    transform: scale(1); 
+    opacity: 1; 
+  }
+}
+
+/* Bounce attention */
+@keyframes bounceAttention {
+  0%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-4px); }
+  75% { transform: translateY(2px); }
+}
+
+/* Glow pulse for POI */
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 5px rgba(147, 51, 234, 0.5); }
+  50% { box-shadow: 0 0 20px rgba(147, 51, 234, 0.8); }
+}
+
+/* Utility classes */
+.animate-fade-in { 
+  animation: fadeIn 0.3s ease-out; 
+}
+
+.animate-slide-in { 
+  animation: slideIn 0.4s ease-out; 
+}
+
+.animate-speaker-pop { 
+  animation: speakerPop 0.3s ease-out; 
+}
+
+.animate-pulse-warning { 
+  animation: pulse 1s ease-in-out infinite; 
+}
+
+.animate-pulse-critical { 
+  animation: pulse 0.5s ease-in-out infinite; 
+}
+
+.animate-bounce-attention {
+  animation: bounceAttention 0.6s ease-in-out infinite;
+}
+
+.animate-glow-pulse {
+  animation: glowPulse 1.5s ease-in-out infinite;
+}
+
+/* Smooth transitions */
+.transition-speaker { 
+  transition: all 0.3s ease-out; 
+}
+
+.transition-colors-smooth { 
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s; 
+}
+
+/* Stagger animation delays for lists */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }

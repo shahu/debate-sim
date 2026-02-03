@@ -87,7 +87,7 @@ export const useDebateStore = create<DebateState>((set) => ({
       status: 'active',
       currentSpeaker: state.speakingSequence[0],
       currentSpeakerIndex: 0,
-      timeRemaining: state.currentSpeaker === SpeakerRole.PM ? 420 : 0, // 7 min for PM initially
+      timeRemaining: 420, // 7 min for PM initially
       transcript: [{
         id: `entry-${Date.now()}`,
         speaker: state.speakingSequence[0],
@@ -97,8 +97,8 @@ export const useDebateStore = create<DebateState>((set) => ({
       }]
     }));
 
-    // Trigger engine to start debate flow (includes streaming)
-    debateEngine.startDebate(motion);
+    // Engine initialization and streaming is handled by the component
+    // to avoid circular dependencies
   },
 
   nextSpeaker: () => set((state) => {
@@ -189,33 +189,60 @@ export const useDebateStore = create<DebateState>((set) => ({
     }
   })),
 
-  finalizeStreamingEntry: (finalText: string, wordCount: number) => set((state) => {
-    if (!state.streamingEntry) return state;
-
-    const newEntry: TranscriptEntry = {
-      id: state.streamingEntry.id,
-      speaker: state.streamingEntry.speaker,
-      content: finalText,
-      timestamp: new Date(),
-      type: 'speech',
-      wordCount
-    };
-
-    // Update statistics
-    const totalWords = state.statistics.totalWords + wordCount;
-    const avgWordsPerSpeaker = totalWords / state.speakingSequence.length;
-
-    return {
-      ...state,
-      transcript: [...state.transcript, newEntry],
-      streamingEntry: null,
-      statistics: {
-        ...state.statistics,
-        totalWords,
-        avgWordsPerSpeaker
+  finalizeStreamingEntry: (finalText: string, wordCount: number) => {
+    console.log(`[Store] Finalizing streaming entry for speaker, text length: ${finalText.length}, words: ${wordCount}`);
+    
+    set((state) => {
+      if (!state.streamingEntry) {
+        console.log('[Store] No streaming entry to finalize');
+        return state;
       }
-    };
-  }),
+
+      const newEntry: TranscriptEntry = {
+        id: state.streamingEntry.id,
+        speaker: state.streamingEntry.speaker,
+        content: finalText,
+        timestamp: new Date(),
+        type: 'speech',
+        wordCount
+      };
+
+      // Update statistics
+      const totalWords = state.statistics.totalWords + wordCount;
+      const avgWordsPerSpeaker = totalWords / state.speakingSequence.length;
+
+      console.log(`[Store] Adding entry to transcript, current count: ${state.transcript.length}`);
+
+      return {
+        ...state,
+        transcript: [...state.transcript, newEntry],
+        streamingEntry: null,
+        statistics: {
+          ...state.statistics,
+          totalWords,
+          avgWordsPerSpeaker
+        }
+      };
+    });
+    
+    // After finalizing, trigger next speaker if debate is still active
+    // Use setTimeout to avoid circular dependency issues
+    setTimeout(() => {
+      const { debateEngine } = require('../lib/debateEngine');
+      const state = useDebateStore.getState();
+      console.log(`[Store] Checking if should advance: status=${state.status}, index=${state.currentSpeakerIndex}, total=${state.speakingSequence.length}`);
+      if (state.status === 'active') {
+        const { currentSpeakerIndex, speakingSequence } = state;
+        if (currentSpeakerIndex < speakingSequence.length - 1) {
+          console.log('[Store] Auto-advancing to next speaker after streaming completion');
+          debateEngine.nextSpeaker();
+        } else {
+          console.log('[Store] Last speaker finished, ending debate');
+          useDebateStore.getState().endDebate();
+        }
+      }
+    }, 1000); // Small delay to allow UI to update
+  },
 
   cancelStreamingEntry: () => set(() => ({
     streamingEntry: null
@@ -236,3 +263,19 @@ export const useDebateStore = create<DebateState>((set) => ({
     status: 'completed'
   }))
 }));
+
+// Initialize debate engine with store actions after store creation
+// This breaks the circular dependency
+debateEngine.setStore({
+  getState: () => useDebateStore.getState(),
+  startDebate: () => { /* no-op - handled by component */ },
+  nextSpeaker: () => useDebateStore.getState().nextSpeaker(),
+  addTranscriptEntry: (entry) => useDebateStore.getState().addTranscriptEntry(entry),
+  startStreamingEntry: (speaker, streamGenerator) => 
+    useDebateStore.getState().startStreamingEntry(speaker, streamGenerator),
+  cancelStreamingEntry: () => useDebateStore.getState().cancelStreamingEntry(),
+  endDebate: () => useDebateStore.getState().endDebate(),
+  pauseDebate: () => useDebateStore.getState().pauseDebate(),
+  resumeDebate: () => useDebateStore.getState().resumeDebate(),
+  resetDebate: () => useDebateStore.getState().resetDebate()
+});

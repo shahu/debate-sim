@@ -41,8 +41,28 @@ class POIMechanism {
     }
 
     // Check if it's a valid POI period (not protected time)
-    const isValidPOIPeriod = checkPOIPeriod(currentSpeaker, state.currentSpeakerIndex);
-    const isProtected = isProtectedTime(currentSpeaker, state.currentSpeakerIndex, state.timeRemaining);
+    // Calculate elapsed time based on role's total time and remaining time
+    const totalTime = state.speakingSequence.reduce((acc, role) => {
+      if (role === currentSpeaker) {
+        return acc + 1; // Placeholder - we need the actual time allocation
+      }
+      return acc;
+    }, 0);
+    
+    // For now, let's just use a simpler check - check if current speaker has time remaining
+    // and calculate elapsedTime as totalTime - timeRemaining
+    const roleTimeAllocation: Record<SpeakerRole, number> = {
+      [SpeakerRole.PM]: 420, // 7 minutes
+      [SpeakerRole.LO]: 480, // 8 minutes  
+      [SpeakerRole.MO]: 240, // 4 minutes
+      [SpeakerRole.PW]: 240  // 4 minutes
+    };
+    
+    const totalTimeForCurrentSpeaker = roleTimeAllocation[currentSpeaker] || 0;
+    const elapsedTime = totalTimeForCurrentSpeaker - state.timeRemaining;
+    
+    const isProtected = isProtectedTime(elapsedTime, totalTimeForCurrentSpeaker);
+    const isValidPOIPeriod = checkPOIPeriod(elapsedTime, totalTimeForCurrentSpeaker);
 
     if (!isValidPOIPeriod || isProtected) {
       console.error(`Cannot request POI: invalid timing (protected time: ${isProtected}, valid period: ${isValidPOIPeriod})`);
@@ -207,8 +227,18 @@ class POIMechanism {
     }
 
     // Check if it's a valid POI period
-    const isValidPOIPeriod = checkPOIPeriod(currentSpeaker, state.currentSpeakerIndex);
-    const isProtected = isProtectedTime(currentSpeaker, state.currentSpeakerIndex, state.timeRemaining);
+    const roleTimeAllocation: Record<SpeakerRole, number> = {
+      [SpeakerRole.PM]: 420, // 7 minutes
+      [SpeakerRole.LO]: 480, // 8 minutes  
+      [SpeakerRole.MO]: 240, // 4 minutes
+      [SpeakerRole.PW]: 240  // 4 minutes
+    };
+    
+    const totalTimeForCurrentSpeaker = roleTimeAllocation[currentSpeaker] || 0;
+    const elapsedTime = totalTimeForCurrentSpeaker - state.timeRemaining;
+    
+    const isProtected = isProtectedTime(elapsedTime, totalTimeForCurrentSpeaker);
+    const isValidPOIPeriod = checkPOIPeriod(elapsedTime, totalTimeForCurrentSpeaker);
 
     if (!isValidPOIPeriod) {
       return {
@@ -287,7 +317,16 @@ class POIMechanism {
     if (speaker === currentSpeaker) return false;
     
     // Can't request POI if it's protected time
-    const isProtected = isProtectedTime(currentSpeaker, state.currentSpeakerIndex, state.timeRemaining);
+    const roleTimeAllocation: Record<SpeakerRole, number> = {
+      [SpeakerRole.PM]: 420, // 7 minutes
+      [SpeakerRole.LO]: 480, // 8 minutes  
+      [SpeakerRole.MO]: 240, // 4 minutes
+      [SpeakerRole.PW]: 240  // 4 minutes
+    };
+    
+    const totalTimeForCurrentSpeaker = roleTimeAllocation[currentSpeaker] || 0;
+    const elapsedTime = totalTimeForCurrentSpeaker - state.timeRemaining;
+    const isProtected = isProtectedTime(elapsedTime, totalTimeForCurrentSpeaker);
     
     return !isProtected;
   }

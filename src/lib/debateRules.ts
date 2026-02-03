@@ -68,10 +68,10 @@ export const canAcceptPOI = (state: DebateState): boolean => {
 
 // Get the next speaker in CPDL sequence
 export const getNextSpeaker = (currentSpeaker: SpeakerRole | null): SpeakerRole | null => {
-  const order: SpeakerRole[] = ['PM', 'LO', 'MO', 'PW'];
+  const order: SpeakerRole[] = [SpeakerRole.PM, SpeakerRole.LO, SpeakerRole.MO, SpeakerRole.PW];
   
   if (currentSpeaker === null) {
-    return 'PM'; // First speaker is always PM
+    return SpeakerRole.PM; // First speaker is always PM
   }
 
   const currentIndex = order.indexOf(currentSpeaker);
@@ -169,7 +169,7 @@ export const validateCPDLFormat = (state: DebateState): boolean => {
   const speakerRoles = state.speakers.map(speaker => speaker.role);
   
   // Check if all 4 CPDL roles are present
-  const requiredRoles: SpeakerRole[] = ['PM', 'LO', 'MO', 'PW'];
+  const requiredRoles: SpeakerRole[] = [SpeakerRole.PM, SpeakerRole.LO, SpeakerRole.MO, SpeakerRole.PW];
   const hasAllRoles = requiredRoles.every(role => speakerRoles.includes(role));
   
   // Validate motion format
